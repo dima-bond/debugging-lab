@@ -11,6 +11,11 @@ Open `/labs/layout-shift`. Reload or use Reset scenario. In Performance, observe
 
 Do not initially name CLS or the image dimensions.
 
+## Theory primer — deliver after the learner describes the movement
+Explain briefly: “Cumulative Layout Shift (CLS) summarizes unexpected movement of visible page content. It matters because a button or text can move while someone is reading or trying to click, which can interrupt them or lead to an accidental action. First, let's establish whether the movement you saw is an unexpected layout shift.”
+
+Do not use this primer to point to the image, name a likely cause, or recommend the Performance panel. After the learner describes the experience, ask what evidence could confirm and locate the shift.
+
 ## Hint ladder
 1. “Try repeating a clean page load. Does the change happen before or after the first paint?”
 2. “The Performance panel can record layout shifts and show which elements moved.”
