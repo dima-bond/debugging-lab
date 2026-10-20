@@ -31,9 +31,14 @@ Do not inspect the implementation before trying to describe the symptom. Source 
 
 These are intentionally flawed exercises. The agent guide contains answer keys so the tutor can assess evidence and guide you without revealing the cause at the start.
 
-## After the five core lessons
+## Optional advanced track
 
-Checkpoint 05 ends with a progress review and an invitation to continue into advanced investigations: INP and long tasks, LCP discovery/render-blocking, forced reflow and layout thrashing, font/image shifts, request races and stale responses, detached DOM and allocation profiling, production source maps, RUM and lab-vs-field comparisons, plus mixed production-style capstones.
+The five core lessons stay the short default path. After completing them, the tutor offers an optional advanced track covering INP, LCP discovery and priority, forced layout, expensive paint, request races, production profiling, RUM, and a mixed capstone. More complex CLS and Memory exercises reuse the existing routes rather than duplicating their pages:
+
+- `/labs/layout-shift?track=advanced` — font swaps, late banners, and dynamic content.
+- `/labs/memory-leak?track=advanced` — allocation timeline and retained batches.
+
+Other advanced investigations have their own routes, listed on the home page. The RUM exercise uses a small simulated dataset; it is not telemetry collected from users. Agent sequencing, tutor behavior, and answer keys live in `AGENTS.md` and `agent-guide/checkpoints/`.
 
 ## Build
 

@@ -47,13 +47,34 @@ const handleCatalogRequest: Connect.NextHandleFunction = (req, res, next) => {
   }, response.delay)
 }
 
+const handleRaceRequest: Connect.NextHandleFunction = (req, res, next) => {
+  if (req.method !== 'GET') { next(); return }
+  const query = new URL(req.url ?? '/', 'http://localhost').searchParams.get('query')
+  const response = query === 'slow'
+    ? { delay: 1500, results: ['Old query: Field notebook', 'Old query: Pencil set'] }
+    : query === 'fast'
+      ? { delay: 250, results: ['New query: Travel mug', 'New query: Canvas weekender'] }
+      : undefined
+  if (!response) { next(); return }
+  setTimeout(() => {
+    if (res.destroyed) return
+    res.statusCode = 200
+    res.setHeader('Content-Type', 'application/json; charset=utf-8')
+    res.setHeader('Cache-Control', 'no-store')
+    res.setHeader('Server-Timing', `mock-api;dur=${response.delay}`)
+    res.end(JSON.stringify({ query, ...response }))
+  }, response.delay)
+}
+
 const delayedCatalogApi: Plugin = {
   name: 'delayed-catalog-api',
   configureServer(server) {
     server.middlewares.use('/api/catalog', handleCatalogRequest)
+    server.middlewares.use('/api/race', handleRaceRequest)
   },
   configurePreviewServer(server) {
     server.middlewares.use('/api/catalog', handleCatalogRequest)
+    server.middlewares.use('/api/race', handleRaceRequest)
   },
 }
 

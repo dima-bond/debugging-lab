@@ -34,15 +34,15 @@ Run the same Lighthouse mode again and record the same reload in Performance. Co
 Once the learner has completed the evidence and verification loop, congratulate them on completing the five core investigations and name the tools they have practiced: Network, Performance, React Profiler, Memory, and Lighthouse. Summarize any repeat topics from `progress.md`. Then offer the advanced investigations and a mixed production-style capstone below. Ask whether they want to continue; do not begin advanced lessons until they answer.
 
 ## Advanced investigations to offer
-- INP, long tasks, event timing, and interaction breakdown.
-- LCP discovery, image priority, and render-blocking resources.
-- Forced reflow, layout thrashing, and expensive paint.
-- Font swaps and several causes of layout shift.
-- Request races, stale responses, retries, and cancellation.
-- Detached DOM, allocation timelines, and heap retaining paths.
-- Production source maps and profiling build caveats.
-- RUM segmentation, lab-versus-field data, and post-release comparison.
-- Mixed capstone: investigate a complaint with overlapping Network, React, and Memory symptoms, then defend which evidence explains the user impact.
+- INP and slow interactions (`06-inp.md`).
+- LCP discovery and rendering (`07-lcp.md`).
+- Forced layout and expensive paint (`08-rendering-costs.md`).
+- Font, banner, and dynamic-content shifts on the existing CLS route (`09-cls-variants.md`).
+- Request races and stale responses with real delayed local HTTP requests (`10-request-races.md`).
+- Allocation timeline and retaining paths on the existing Memory route (`11-memory-profiling.md`).
+- Development-versus-production profiling (`12-production-profiling.md`).
+- RUM segmentation and field data using explicitly simulated data (`13-rum.md`).
+- Mixed Network/React/Memory capstone (`14-mixed-capstone.md`).
 
 ## Completion rubric
 The learner uses Lighthouse to choose a question, verifies it in a trace, explains lab score variability, makes a targeted fix, repeats the audit/trace, and can articulate why field data may differ. Graduation is based on all five rubric results, not just finishing the UI tour.
