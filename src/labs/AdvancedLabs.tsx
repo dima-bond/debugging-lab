@@ -28,19 +28,15 @@ export function InpInteraction() {
 }
 
 export function LcpDiscovery() {
-  const [scenario, setScenario] = useState<'late' | 'eager'>('late')
-  const [run, setRun] = useState(0)
+  const scenario = new URLSearchParams(window.location.search).get('scenario') === 'eager' ? 'eager' : 'late'
   const [visible, setVisible] = useState(scenario === 'eager')
   useEffect(() => {
     if (scenario === 'eager') { setVisible(true); return }
     setVisible(false)
     const timer = window.setTimeout(() => setVisible(true), 1800)
     return () => window.clearTimeout(timer)
-  }, [run, scenario])
-  function replay(next = scenario) {
-    setScenario(next); setRun((v) => v + 1)
-  }
-  return <AdvancedFrame index={1} reset={() => replay('late')}><DemoCard title="A landing page with a late-arriving hero"><p className="advanced-copy">Compare a clean reload in each scenario. Find the LCP element and account for its delay.</p><div className="scenario-controls"><button className="text-button" onClick={() => replay('late')}>Late discovery</button><button className="text-button" onClick={() => replay('eager')}>Eagerly available</button><span>Run {run}</span></div>{visible ? <img className="lcp-art" src="/images/fieldnote-cover.svg" alt="Fieldnote editorial cover" /> : <div className="lcp-placeholder">The lead story is on its way…</div>}<h3>Stories for curious people</h3></DemoCard></AdvancedFrame>
+  }, [scenario])
+  return <AdvancedFrame index={1} reset={() => window.location.assign('/labs/lcp-discovery?scenario=late')}><DemoCard title="A landing page with a late-arriving hero"><p className="advanced-copy">Each scenario link starts a clean navigation. Record both under the same conditions, then compare the LCP element and its delay.</p><div className="scenario-controls"><a className="text-button" href="/labs/lcp-discovery?scenario=late">Reload · late discovery</a><a className="text-button" href="/labs/lcp-discovery?scenario=eager">Reload · eagerly available</a><span>Current · {scenario}</span></div>{visible ? <img className="lcp-art" src="/images/fieldnote-cover.svg" alt="Fieldnote editorial cover" /> : <div className="lcp-placeholder">The lead story is on its way…</div>}<h3>Stories for curious people</h3></DemoCard></AdvancedFrame>
 }
 
 export function RenderingCosts() {
