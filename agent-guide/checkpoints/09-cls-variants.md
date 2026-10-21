@@ -12,7 +12,7 @@ After observation, explain that CLS summarizes unexpected layout movement over a
 3. Compare the event frames to the font/banner/content appearance.
 
 ## Answer
-The font case changes heading metrics; the banner and content cases insert new height without reserving space. Identify the affected node and event rather than merely naming the scenario label.
+The font case renders its text from the first frame in a fallback font, then changes only the font family after the delay; the new font metrics change wrapping and move the content below. The banner and content cases separately insert new height without reserving space. Identify the affected node and event rather than merely naming the scenario label.
 
 ## Verify
-Learner proposes a reservation/stability fix appropriate to the chosen cause and repeats the same variant. They may choose another variant after closing this checkpoint.
+For Font swap, use the filmstrip to confirm the text exists before the shift and inspect the shift event at the moment its font metrics change; affected nodes below the text should move. Do not accept a trace where the text itself is inserted late or where a geometric transition creates the movement. Learner proposes a reservation/stability fix appropriate to the chosen cause and repeats the same variant. They may choose another variant after closing this checkpoint.

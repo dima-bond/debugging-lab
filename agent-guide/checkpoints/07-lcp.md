@@ -14,7 +14,7 @@ After their description, explain that Largest Contentful Paint (LCP) measures wh
 3. Correlate the element's request and initiator with Network timing and priority.
 
 ## Answer
-The late case inserts the hero image only after a timer, delaying discovery; the eager case makes it discoverable immediately. Do not assume every slow LCP is a slow server or large download.
+The late case inserts the hero image only after a timer, delaying discovery; the eager case makes it discoverable immediately. The detailed raster hero is intentionally large enough to become the final image LCP candidate in both cases. Do not assume every slow LCP is a slow server or large download.
 
 ## Verify
-Record a clean reload at each scenario URL and explain the change in discovery/render timing. Confirm the URL preserves the chosen variant across reloads. The displayed image is a small local asset, so this lesson isolates discovery more than transfer duration.
+Record a clean reload at each scenario URL and explain the change in discovery/render timing. Confirm the final LCP Related node is `img.lcp-art` in both traces and that its timestamp moves with the late discovery timer. Confirm the URL preserves the chosen variant across reloads. The displayed image is a local asset, so this lesson isolates discovery more than transfer duration.

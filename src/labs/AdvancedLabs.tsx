@@ -36,22 +36,42 @@ export function LcpDiscovery() {
     const timer = window.setTimeout(() => setVisible(true), 1800)
     return () => window.clearTimeout(timer)
   }, [scenario])
-  return <AdvancedFrame index={1} reset={() => window.location.assign('/labs/lcp-discovery?scenario=late')}><DemoCard title="A landing page with a late-arriving hero"><p className="advanced-copy">Each scenario link starts a clean navigation. Record both under the same conditions, then compare the LCP element and its delay.</p><div className="scenario-controls"><a className="text-button" href="/labs/lcp-discovery?scenario=late">Reload · late discovery</a><a className="text-button" href="/labs/lcp-discovery?scenario=eager">Reload · eagerly available</a><span>Current · {scenario}</span></div>{visible ? <img className="lcp-art" src="/images/fieldnote-cover.svg" alt="Fieldnote editorial cover" /> : <div className="lcp-placeholder">The lead story is on its way…</div>}<h3>Stories for curious people</h3></DemoCard></AdvancedFrame>
+  return <AdvancedFrame index={1} reset={() => window.location.assign('/labs/lcp-discovery?scenario=late')}><DemoCard title="A landing page with a late-arriving hero"><p className="advanced-copy">Each scenario link starts a clean navigation. Record both under the same conditions, then compare the LCP element and its delay.</p><div className="scenario-controls"><a className="text-button" href="/labs/lcp-discovery?scenario=late">Reload · late discovery</a><a className="text-button" href="/labs/lcp-discovery?scenario=eager">Reload · eagerly available</a><span>Current · {scenario}</span></div>{visible ? <img className="lcp-art" src="/images/fieldnote-hero.jpg" width="1200" height="434" fetchPriority="high" alt="Field notebook, canvas tote, and dried botanicals on a studio table" /> : <div className="lcp-placeholder">The lead story is on its way…</div>}<h3>Stories for curious people</h3></DemoCard></AdvancedFrame>
+}
+
+function runLayoutThrash() {
+  const cards = Array.from(document.querySelectorAll<HTMLElement>('.layout-card'))
+  let measuredHeight = 0
+  for (let pass = 0; pass < 32; pass += 1) {
+    for (const [index, card] of cards.entries()) {
+      card.style.height = `${38 + ((pass + index) % 2)}px`
+      measuredHeight += card.offsetHeight
+    }
+  }
+  return measuredHeight
 }
 
 export function RenderingCosts() {
   const [mode, setMode] = useState<'layout' | 'paint'>('layout')
   const [run, setRun] = useState(0)
   const [value, setValue] = useState(0)
+  const [paintPhase, setPaintPhase] = useState<'a' | 'b'>('a')
+  function selectMode(next: 'layout' | 'paint') {
+    for (const card of document.querySelectorAll<HTMLElement>('.layout-card')) card.style.removeProperty('height')
+    setMode(next)
+    setRun(0)
+    setValue(0)
+    setPaintPhase('a')
+  }
   function exercise() {
     setRun((n) => n + 1)
-    if (mode === 'layout') {
-      const cards = Array.from(document.querySelectorAll<HTMLElement>('.layout-card'))
-      for (const card of cards) { card.style.width = `${card.offsetWidth + 1}px`; void card.offsetHeight }
-    } else busyWork(80)
-    setValue((n) => n + 1)
+    if (mode === 'layout') setValue(runLayoutThrash())
+    else {
+      setPaintPhase((phase) => phase === 'a' ? 'b' : 'a')
+      setValue((n) => n + 1)
+    }
   }
-  return <AdvancedFrame index={2} reset={() => { setRun(0); setValue(0); setMode('layout') }}><DemoCard title="A dashboard interaction feels rough"><p className="advanced-copy">Two cases share one route. Record each separately and compare Main, Layout, and paint activity.</p><div className="scenario-controls"><button className="text-button" onClick={() => setMode('layout')}>Case A · layout</button><button className="text-button" onClick={() => setMode('paint')}>Case B · paint</button><span>{mode === 'layout' ? 'Layout reads/writes' : 'Large blurred surface'}</span></div><button className="primary-button" onClick={exercise}>Recalculate dashboard</button><span className="scenario-count">Runs {run} · state {value}</span><div className={`render-surface ${mode === 'paint' ? 'paint-heavy' : ''}`}>{Array.from({ length: 24 }, (_, i) => <div className="layout-card" key={i}>Metric {i + 1}</div>)}</div></DemoCard></AdvancedFrame>
+  return <AdvancedFrame index={2} reset={() => selectMode('layout')}><DemoCard title="A dashboard interaction feels rough"><p className="advanced-copy">Two cases share one route. Record each separately and compare Main, Layout, and paint activity.</p><div className="scenario-controls"><button className="text-button" onClick={() => selectMode('layout')}>Case A · layout</button><button className="text-button" onClick={() => selectMode('paint')}>Case B · paint</button><span>{mode === 'layout' ? 'Layout reads/writes' : 'Large repainted surface'}</span></div><button className="primary-button" onClick={exercise}>Recalculate dashboard</button><span className="scenario-count">Runs {run} · state {value}</span><div className={`render-surface ${mode === 'paint' ? `paint-heavy paint-phase-${paintPhase}` : ''}`}>{Array.from({ length: 32 }, (_, i) => <div className="layout-card" key={i}>Metric {i + 1}</div>)}</div></DemoCard></AdvancedFrame>
 }
 
 type RaceResult = { query: string; results: string[]; delay: number }
