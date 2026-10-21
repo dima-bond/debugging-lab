@@ -1,5 +1,11 @@
 import { defineConfig, type Connect, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
+import { readFile } from 'node:fs/promises'
+import { fileURLToPath } from 'node:url'
+
+const playfairFontPath = fileURLToPath(
+  new URL('./public/fonts/playfair-display-latin.woff2', import.meta.url),
+)
 
 const catalog = {
   categories: {
@@ -66,15 +72,35 @@ const handleRaceRequest: Connect.NextHandleFunction = (req, res, next) => {
   }, response.delay)
 }
 
+const handleSlowFontRequest: Connect.NextHandleFunction = (req, res, next) => {
+  if (req.method !== 'GET') { next(); return }
+
+  const delay = 1000
+  setTimeout(() => {
+    void readFile(playfairFontPath)
+      .then((font) => {
+        if (res.destroyed) return
+        res.statusCode = 200
+        res.setHeader('Content-Type', 'font/woff2')
+        res.setHeader('Cache-Control', 'no-store')
+        res.setHeader('Server-Timing', `mock-font;dur=${delay}`)
+        res.end(font)
+      })
+      .catch(next)
+  }, delay)
+}
+
 const delayedCatalogApi: Plugin = {
   name: 'delayed-catalog-api',
   configureServer(server) {
     server.middlewares.use('/api/catalog', handleCatalogRequest)
     server.middlewares.use('/api/race', handleRaceRequest)
+    server.middlewares.use('/fonts/slow-playfair-display.woff2', handleSlowFontRequest)
   },
   configurePreviewServer(server) {
     server.middlewares.use('/api/catalog', handleCatalogRequest)
     server.middlewares.use('/api/race', handleRaceRequest)
+    server.middlewares.use('/fonts/slow-playfair-display.woff2', handleSlowFontRequest)
   },
 }
 
